@@ -14,6 +14,7 @@ externalDocs:
   url: 'https://github.com/iTraining/document'
 tags:
   - name: v1
+    description: API v1
 schemes:
 - http
 consumes:

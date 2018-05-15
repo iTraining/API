@@ -12,11 +12,8 @@ info:
 externalDocs:
   description: iTraining训练打卡小程序
   url: 'https://github.com/iTraining/document'
-# tags:
-#   - name: Restaurant
-#     description: Operations about restaurant
-#   - name: Session
-#     description: Record restaurant sign-in(sign-out) status
+tags:
+  - name: v1
 schemes:
 - http
 consumes:
@@ -25,8 +22,10 @@ produces:
 - application/json
 paths:
   /sessionid:
-    x-summary: 获取session_id
+    x-summary: Session Id
     get:
+      tags:
+        - v1
       summary: Get session_id
       parameters:
         - name: code

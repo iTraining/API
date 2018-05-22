@@ -42,6 +42,56 @@ paths:
           examples:
             application/json:
               session_id: 'FDBDA3fb1D'
+  /team:
+    x-summary: Team operation
+    post:
+      tags:
+        - v1
+      summary: Create new team
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: true
+          description: 用于获取session信息的sessionid
+        - in: formData
+          name: name
+          type: string
+          required: true
+          description: 队名
+        - in: formData
+          name: bio
+          type: string
+          required: true
+          description: 队伍介绍
+      responses:
+        201:
+          description: Create team successfully
+          schema:
+            $ref: '#/definitions/Team'
+          examples:
+            application/json:
+              name: '中大龙舟'
+              bio: '更黑更快更强'
+              date: '2018-05-21 20:19:15'
+              leader_name: '赵云雷'
+    get:
+      tags:
+        - v1
+      summary: Get collection of leader's team information
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: true
+          description: 用于获取session信息的sessionid
+      responses:
+        201:
+          description: Get collection of team info successfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Team'
 definitions:
   SessionId:
     title: Session id
@@ -53,3 +103,25 @@ definitions:
       - session_id
     example:
       session_id: 'FDBDA3fb1D'
+  Team:
+    title: Team
+    type: object
+    properties:
+      name:
+        type: string
+      bio:
+        type: string
+      date:
+        type: string
+      leader_name:
+        type: string
+    required:
+      - name
+      - bio
+      - date
+      - leader_name
+    example:
+      name: '中大龙舟'
+      bio: '更黑更快更强'
+      date: '2018-05-21 20:19:15'
+      leader_name: '赵云雷'

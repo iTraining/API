@@ -78,13 +78,18 @@ paths:
     get:
       tags:
         - v1
-      summary: Get collection of leader's team information
+      summary: Get collection of user's team information
       parameters:
         - in: header
           name: Cookie
           type: string
           required: true
           description: 用于获取session信息的sessionid
+        - in: query
+          name: option
+          type: string
+          required: true
+          description: 可选项 'all/created/joined'；'all' 获取全部队伍。'created' 获取创建队伍。'joined' 获取参加的队伍
       responses:
         201:
           description: Get collection of team info successfully

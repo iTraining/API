@@ -97,6 +97,26 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Team'
+  /team/invitation:
+    x-summary: Invitation link
+    get:
+      tags:
+        - v1
+      summary: Get invitation link with 30 mins ttl
+      parameters:
+        - in: query
+          name: team_id
+          type: string
+          required: true
+          description: 获取对应队伍的invitation link
+      responses:
+        200:
+          description: Get invitation link successfully
+          schema:
+            type: string
+    
+
+
 definitions:
   SessionId:
     title: Session id

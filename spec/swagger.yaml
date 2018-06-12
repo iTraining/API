@@ -114,8 +114,26 @@ paths:
           description: Get invitation link successfully
           schema:
             type: string
-    
-
+  /team/join:
+    x-summary: Join team activation
+    get:
+      tags:
+        - v1
+      summary: Get join team activation with token
+      parameters:
+        - in: query
+          name: team_id
+          type: string
+          required: true
+          description: 加入的目标队伍
+        - in: query
+          name: token
+          type: string
+          required: true
+          description: 加入队伍认证的token
+      responses:
+        200:
+          description: Join team successfully
 
 definitions:
   SessionId:

@@ -191,7 +191,7 @@ paths:
         200:
           description: Join team successfully
   /team/member:
-    x-summary: Operand on team members
+    x-summary: Team members operation
     get:
       tags:
         - v1
@@ -238,7 +238,7 @@ paths:
         200:
           description: Delete team member successfully
   /schedule/meta:
-    x-summary: Operand on training meta data
+    x-summary: Training meta operation
     post:
       tags:
         - v1
@@ -306,7 +306,114 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Meta'
-      
+  /schedule:
+    x-summary: Schedule operation
+    post:
+      tags:
+        - v1
+      summary: Create team schedule (for leader)
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: true
+          description: 用于获取session信息的sessionid
+        - in: formData
+          name: team_id
+          type: integer
+          required: true
+          description: 目标队伍
+        - in: formData
+          name: training_class
+          type: string
+          required: true
+          description: 计划类型：训练|测试
+        - in: formData
+          name: title
+          type: string
+          required: true
+          description: 计划标题
+        - in: formData
+          name: description
+          type: string
+          required: true
+          description: 计划介绍
+        - in: formData
+          name: state
+          type: string
+          required: true
+          description: 计划状态, e.g 草稿|发布
+        - in: formData
+          name: training_date
+          type: string
+          required: true
+          description: 训练时间, e.g YY-MM-DD
+        - in: formData
+          name: indicators
+          type: array
+          items:
+            type: string
+          description: 各项目指标要求，e.g `[{group_number, data1, data2, data3, data4, meta_id}, ..]`
+        - in: formData
+          name: members
+          type: array
+          items:
+            type: string
+          description: 打卡队员id列表，e.g `[wx_id1, wx_id2]`
+      responses:
+        200:
+          description: Create team schedule successfully
+          schema:
+            $ref: '#/definitions/Schedule'
+    get:
+      tags:
+        - v1
+      summary: Get team schedule list you created. 
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: false
+          description: 用于获取session信息的sessionid
+        - in: query
+          name: schedule_id
+          type: string
+          required: true
+          description: 目标计划id
+      responses:
+        200:
+          description: Get team schedule successfully
+          schema:
+            $ref: '#/definitions/Schedule'
+  /schedule/collection:
+    x-summary: Schedule Collection operation
+    get:
+      tags:
+        - v1
+      summary: Get team schedule list you created (for leader). 
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: false
+          description: 用于获取session信息的sessionid
+        - in: query
+          name: option
+          type: string
+          required: true
+          description: created | me
+        - in: query
+          name: team_id
+          type: string
+          required: true
+          description: 目标队伍
+      responses:
+        200:
+          description: Get team schedule list successfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Schedule'
 
 definitions:
   SessionId:
@@ -333,6 +440,32 @@ definitions:
         type: string
       date:
         type: string
+  Schedule:
+    title: Schedule
+    type: object
+    properties:
+      schedule_id:
+        type: integer
+      team_id:
+        type: integer
+      training_class:
+        type: string
+      title:
+        type: string
+      description:
+        type: string
+      state:
+        type: string
+      training_date:
+        type: string
+      indicators:
+        type: array
+        items:
+          $ref: '#/definitions/Meta'
+      members:
+        type: array
+        items:
+          $ref: '#/definitions/User'
   Meta:
     title: Meta
     type: object

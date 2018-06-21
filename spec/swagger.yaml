@@ -22,20 +22,30 @@ consumes:
 produces:
 - application/json
 paths:
-  /sessionid:
+  /session:
     x-summary: Session Id
-    get:
+    post:
       tags:
         - v1
-      summary: Get session_id
+      summary: Create session_id
       parameters:
-        - name: code
-          in: query
+        - in: formData
+          name: code
           type: string
           required: true
           description: 小程序通过wx.login()获取的用户授权码
+        - in: formData
+          name: nickname
+          type: string
+          required: true
+          description: 微信用户昵称
+        - in: formData
+          name: image_url
+          type: string
+          required: true
+          description: 微信用户头像地址
       responses:
-        200:
+        201:
           description: Get session_id successfully
           schema:
             $ref: '#/definitions/SessionId'
@@ -97,12 +107,58 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Team'
+    put:
+      tags:
+        - v1
+      summary: Update team information (for team leader)
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: true
+          description: 用于获取session信息的sessionid
+        - in: formData
+          name: name
+          type: string
+          required: true
+          description: 队伍名
+        - in: formData
+          name: bio
+          type: string
+          required: true
+          description: 队伍介绍
+        - in: formData
+          name: team_id
+          type: string
+          required: true
+          description: 更新的队伍id
+      responses:
+        200:
+          description: Update team successfully
+    delete:
+      tags:
+        - v1
+      summary: Delete team of the team id (for team leader)
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: true
+          description: 用于获取session信息的sessionid
+        - in: formData
+          name: team_id
+          type: string
+          required: true
+          description: 删除的队伍id
+      responses:
+        200:
+          description: Delete team successfully
   /team/invitation:
     x-summary: Invitation link
     get:
       tags:
         - v1
-      summary: Get invitation link with 30 mins ttl
+      summary: Get invitation link with 30 mins ttl (for team leader)
       parameters:
         - in: query
           name: team_id
@@ -134,6 +190,123 @@ paths:
       responses:
         200:
           description: Join team successfully
+  /team/member:
+    x-summary: Operand on team members
+    get:
+      tags:
+        - v1
+      summary: Get team members (for all members in team)
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: true
+          description: 用于获取session信息的sessionid
+        - in: query
+          name: team_id
+          type: string
+          required: true
+          description: 目标队伍
+      responses:
+        200:
+          description: Get team member successfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+    delete:
+      tags:
+        - v1
+      summary: Delete team member (for team leader)
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: true
+          description: 用于获取session信息的sessionid
+        - in: formData
+          name: wx_id
+          type: string
+          required: true
+          description: 目标对象微信
+        - in: formData
+          name: team_id
+          type: string
+          required: true
+          description: 希望移出的目标队伍id
+      responses:
+        200:
+          description: Delete team member successfully
+  /schedule/meta:
+    x-summary: Operand on training meta data
+    post:
+      tags:
+        - v1
+      summary: Create meta for training record (for team leader)
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: true
+          description: 用于获取session信息的sessionid
+        - in: formData
+          name: team_id
+          type: string
+          required: true
+          description: 目标队伍id
+        - in: formData
+          name: training_name
+          type: string
+          required: true
+          description: 训练头信息名，e.g 卧推
+        - in: formData
+          name: index1
+          type: string
+          required: true
+          description: 训练指标1单位，e.g 次/组
+        - in: formData
+          name: index2
+          type: string
+          required: true
+          description: 训练指标2单位，e.g 分钟/组
+        - in: formData
+          name: index3
+          type: string
+          required: true
+          description: 训练指标3单位，e.g 无
+        - in: formData
+          name: index4
+          type: string
+          required: true
+          description: 训练指标4单位，e.g 无
+      responses:
+        201:
+          description: Create training meta successfully
+          schema:
+            $ref: '#/definitions/Meta'
+    get:
+      tags:
+        - v1
+      summary: Get team training meta
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: true
+          description: 用于获取session信息的sessionid
+        - in: query
+          name: team_id
+          type: string
+          required: true
+          description: 目标队伍
+      responses:
+        200:
+          description: Get team training meta successfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Meta'
+      
 
 definitions:
   SessionId:
@@ -146,6 +319,38 @@ definitions:
       - session_id
     example:
       session_id: 'FDBDA3fb1D'
+  User:
+    title: User
+    type: object
+    properties:
+      nickname:
+        type: string
+      wx_id:
+        type: string
+      image_url:
+        type: string
+      bio:
+        type: string
+      date:
+        type: string
+  Meta:
+    title: Meta
+    type: object
+    properties:
+      meta_id:
+        type: integer
+      training_name:
+        type: string
+      index1:
+        type: number
+      index2:
+        type: number
+      index3:
+        type: number
+      index4:
+        type: number
+      team_id:
+        type: integer
   Team:
     title: Team
     type: object

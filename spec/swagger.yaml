@@ -390,21 +390,21 @@ paths:
           type: string
           required: true
           description: 获取计划形式，created|private
-        - in: formData
+        - in: query
           name: schedule_id
           type: integer
           required: true
           description: schedule_id表示目标队伍，schedule=-1表示所有队伍
-        - in: formData
+        - in: query
           name: b_date
           type: string
           required: true
-          description: b_date和e_date表示获取[b_date, e_date]这段时间内的个人打卡信息，e.g YY-MM-DD
-        - in: formData
+          description: 日期，b_date和e_date表示获取[b_date, e_date)这段时间内信息，e.g YY-MM-DD
+        - in: query
           name: e_date
           type: string
           required: true
-          description: 见b_date
+          description: 日期，见b_date
       responses:
         200:
           description: Get team schedule successfully
@@ -444,26 +444,26 @@ paths:
           type: string
           required: false
           description: 用于获取session信息的sessionid
-        - in: formData
+        - in: query
           name: option
           type: string
           required: true
           description: 选择获取个人还是队伍打卡信息：private | team；
-        - in: formData
+        - in: query
           name: schedule_id
           type: integer
           required: true
           description: schedule_id表示目标队伍，schedule=-1表示所有队伍
-        - in: formData
+        - in: query
           name: b_date
           type: string
           required: true
-          description: b_date和e_date表示获取[b_date, e_date]这段时间内的个人打卡信息，e.g YY-MM-DD
-        - in: formData
+          description: 日期，b_date和e_date表示获取[b_date, e_date)这段时间内信息，e.g YY-MM-DD
+        - in: query
           name: e_date
           type: string
           required: true
-          description: 见b_date
+          description: 日期，见b_date
       responses:
         200:
           description: Get punch information successfully
@@ -506,26 +506,26 @@ paths:
         - Record
       summary: Get testing record for leader or private
       parameters:
-        - in: formData
+        - in: query
           name: option
           type: string
           required: true
           description: 选择获取个人还是队伍打卡信息：private | team；
-        - in: formData
+        - in: query
           name: schedule_id
           type: integer
           required: true
           description: schedule_id表示目标队伍，schedule=-1表示所有队伍
-        - in: formData
+        - in: query
           name: b_date
           type: string
           required: true
-          description: b_date和e_date表示获取[b_date, e_date]这段时间内的个人打卡信息，e.g YY-MM-DD
-        - in: formData
+          description: 日期，b_date和e_date表示获取[b_date, e_date)这段时间内信息，e.g YY-MM-DD
+        - in: query
           name: e_date
           type: string
           required: true
-          description: 见b_date
+          description: 日期，见b_date
       responses:
         200:
           description: Get records information successfully

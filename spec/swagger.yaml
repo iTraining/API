@@ -391,10 +391,10 @@ paths:
           required: true
           description: 获取计划形式，created|private
         - in: query
-          name: schedule_id
+          name: team_id
           type: integer
           required: true
-          description: schedule_id表示目标队伍，schedule=-1表示所有队伍
+          description: team_id表示目标队伍，team_id=-1表示所有队伍
         - in: query
           name: b_date
           type: string
@@ -453,7 +453,7 @@ paths:
           name: schedule_id
           type: integer
           required: true
-          description: schedule_id表示目标队伍，schedule=-1表示所有队伍
+          description: schedule_id表示目标计划，schedule_id=-1表示所有计划
         - in: query
           name: b_date
           type: string
@@ -515,7 +515,7 @@ paths:
           name: schedule_id
           type: integer
           required: true
-          description: schedule_id表示目标队伍，schedule=-1表示所有队伍
+          description: schedule_id表示目标计划，schedule=-1表示所有计划
         - in: query
           name: b_date
           type: string

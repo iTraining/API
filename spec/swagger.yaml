@@ -13,8 +13,16 @@ externalDocs:
   description: iTraining训练打卡小程序
   url: 'https://github.com/iTraining/document'
 tags:
-  - name: v1
-    description: API v1
+  - name: Auth
+    description: 身份认证api
+  - name: Team
+    description: 队伍信息管理api
+  - name: Schedule
+    description: 计划管理api
+  - name: Punch
+    description: 打卡服务api
+  - name: Record
+    description: 上传成绩api
 schemes:
 - http
 consumes:
@@ -26,7 +34,7 @@ paths:
     x-summary: Session Id
     post:
       tags:
-        - v1
+        - Auth
       summary: Create session_id
       parameters:
         - in: formData
@@ -56,7 +64,7 @@ paths:
     x-summary: Team operation
     post:
       tags:
-        - v1
+        - Team
       summary: Create new team
       parameters:
         - in: header
@@ -87,7 +95,7 @@ paths:
               leader_name: '赵云雷'
     get:
       tags:
-        - v1
+        - Team
       summary: Get collection of user's team information
       parameters:
         - in: header
@@ -107,10 +115,30 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Team'
-    put:
+    delete:
       tags:
-        - v1
-      summary: Update team information (for team leader)
+        - Team
+      summary: Delete team of the team id (for team leader)
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: true
+          description: 用于获取session信息的sessionid
+        - in: formData
+          name: team_id
+          type: string
+          required: true
+          description: 删除的队伍id
+      responses:
+        200:
+          description: Delete team successfully
+  /team/detail:
+    x-summary: Update team
+    post:
+      tags:
+        - Team
+      summary: Update team detail (for team leader)
       parameters:
         - in: header
           name: Cookie
@@ -135,29 +163,11 @@ paths:
       responses:
         200:
           description: Update team successfully
-    delete:
-      tags:
-        - v1
-      summary: Delete team of the team id (for team leader)
-      parameters:
-        - in: header
-          name: Cookie
-          type: string
-          required: true
-          description: 用于获取session信息的sessionid
-        - in: formData
-          name: team_id
-          type: string
-          required: true
-          description: 删除的队伍id
-      responses:
-        200:
-          description: Delete team successfully
   /team/invitation:
     x-summary: Invitation link
     get:
       tags:
-        - v1
+        - Team
       summary: Get invitation link with 30 mins ttl (for team leader)
       parameters:
         - in: query
@@ -174,7 +184,7 @@ paths:
     x-summary: Join team activation
     get:
       tags:
-        - v1
+        - Team
       summary: Get join team activation with token
       parameters:
         - in: query
@@ -194,7 +204,7 @@ paths:
     x-summary: Team members operation
     get:
       tags:
-        - v1
+        - Team
       summary: Get team members (for all members in team)
       parameters:
         - in: header
@@ -216,7 +226,7 @@ paths:
               $ref: '#/definitions/User'
     delete:
       tags:
-        - v1
+        - Team
       summary: Delete team member (for team leader)
       parameters:
         - in: header
@@ -241,7 +251,7 @@ paths:
     x-summary: Training meta operation
     post:
       tags:
-        - v1
+        - Schedule
       summary: Create meta for training record (for team leader)
       parameters:
         - in: header
@@ -286,7 +296,7 @@ paths:
             $ref: '#/definitions/Meta'
     get:
       tags:
-        - v1
+        - Schedule
       summary: Get team training meta
       parameters:
         - in: header
@@ -310,7 +320,7 @@ paths:
     x-summary: Schedule operation
     post:
       tags:
-        - v1
+        - Schedule
       summary: Create team schedule (for leader)
       parameters:
         - in: header
@@ -349,17 +359,17 @@ paths:
           required: true
           description: 训练时间, e.g YY-MM-DD
         - in: formData
-          name: indicators
+          name: references
           type: array
           items:
             type: string
-          description: 各项目指标要求，e.g `[{group_number, data1, data2, data3, data4, meta_id}, ..]`
-        - in: formData
-          name: members
-          type: array
-          items:
-            type: string
-          description: 打卡队员id列表，e.g `[wx_id1, wx_id2]`
+          description: 各项目指标要求，e.g `[{group_number, data1, data2, data3, data4, test_index, meta_id}, ..]`
+        # - in: formData
+        #   name: members
+        #   type: array
+        #   items:
+        #     type: string
+        #   description: 打卡队员id列表，e.g `[wx_id1, wx_id2]`
       responses:
         200:
           description: Create team schedule successfully
@@ -367,30 +377,8 @@ paths:
             $ref: '#/definitions/Schedule'
     get:
       tags:
-        - v1
+        - Schedule
       summary: Get team schedule list you created. 
-      parameters:
-        - in: header
-          name: Cookie
-          type: string
-          required: false
-          description: 用于获取session信息的sessionid
-        - in: query
-          name: schedule_id
-          type: string
-          required: true
-          description: 目标计划id
-      responses:
-        200:
-          description: Get team schedule successfully
-          schema:
-            $ref: '#/definitions/Schedule'
-  /schedule/collection:
-    x-summary: Schedule Collection operation
-    get:
-      tags:
-        - v1
-      summary: Get team schedule list you created (for leader). 
       parameters:
         - in: header
           name: Cookie
@@ -401,21 +389,178 @@ paths:
           name: option
           type: string
           required: true
-          description: created | me
+          description: 获取计划形式，created|private
         - in: query
-          name: team_id
+          name: date
           type: string
           required: true
-          description: 目标队伍
+          description: 对应训练执行日期，获取所有计划则设为‘’
+        - in: query
+          name: schedule_id
+          type: integer
+          required: true
+          description: 对应的计划id，如何获取所有计划则设为-1
       responses:
         200:
-          description: Get team schedule list successfully
+          description: Get team schedule successfully
+          schema:
+            $ref: '#/definitions/Schedule'
+  /punch:
+    x-summary: Punch in operation
+    post:
+      tags:
+        - Punch
+      summary: Punch in training schedule 
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: false
+          description: 用于获取session信息的sessionid
+        - in: formData
+          name: schedule_id
+          type: string
+          required: true
+          description: 目标计划
+        - in: formData
+          name: Completion
+          type: string
+          description: 完成度
+      responses:
+        201:
+          description: Punch in schedule successfully
+    get:
+      tags:
+        - Punch
+      summary: Get punch in information
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: false
+          description: 用于获取session信息的sessionid
+        - in: formData
+          name: option
+          type: string
+          required: true
+          description: 选择获取个人还是队伍打卡信息：private | team；
+        - in: formData
+          name: schedule_id
+          type: integer
+          required: true
+          description: schedule_id表示目标队伍，schedule=-1表示所有队伍
+        - in: formData
+          name: b_date
+          type: string
+          required: true
+          description: b_date和e_date表示获取[b_date, e_date]这段时间内的个人打卡信息，e.g YY-MM-DD
+        - in: formData
+          name: e_date
+          type: string
+          required: true
+          description: 见b_date
+      responses:
+        200:
+          description: Get punch information successfully
           schema:
             type: array
             items:
-              $ref: '#/definitions/Schedule'
-
+              $ref: '#/definitions/Punch'
+  /record:
+    x-summary: Record operation
+    post:
+      tags:
+        - Record
+      summary: Upload new testing record
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: false
+          description: 用于获取session信息的sessionid
+        - in: formData
+          name: reference_id
+          type: integer
+          required: true
+          description: 训练参考id
+        - in: formData
+          name: group_id
+          type: integer
+          required: true
+          description: 第几组
+        - in: formData
+          name: data
+          type: number
+          required: true
+          description: 考量数据
+      responses:
+        201:
+          description: Punch in schedule successfully
+    get:
+      tags:
+        - Record
+      summary: Get testing record for leader or private
+      parameters:
+        - in: formData
+          name: option
+          type: string
+          required: true
+          description: 选择获取个人还是队伍打卡信息：private | team；
+        - in: formData
+          name: schedule_id
+          type: integer
+          required: true
+          description: schedule_id表示目标队伍，schedule=-1表示所有队伍
+        - in: formData
+          name: b_date
+          type: string
+          required: true
+          description: b_date和e_date表示获取[b_date, e_date]这段时间内的个人打卡信息，e.g YY-MM-DD
+        - in: formData
+          name: e_date
+          type: string
+          required: true
+          description: 见b_date
+      responses:
+        200:
+          description: Get records information successfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Record'
 definitions:
+  Record:
+    title: Record
+    type: object
+    properties:
+      record_id:
+        type: integer
+      reference_id:
+        type: integer
+      wx_id:
+        type: integer
+      group_id:
+        type: integer
+      data:
+        type: number
+      date:
+        type: string
+  Punch:
+    title: Punch
+    type: object
+    properties:
+      checked_date:
+        type: string
+      schedule_id:
+        type: integer
+      completion:
+        type: integer
+      description:
+        type: string
+      wx_id:
+        type: string
+      image_url:
+        type: string
   SessionId:
     title: Session id
     type: object
@@ -458,14 +603,36 @@ definitions:
         type: string
       training_date:
         type: string
-      indicators:
+      references:
         type: array
         items:
-          $ref: '#/definitions/Meta'
+          $ref: '#/definitions/Reference'
       members:
         type: array
         items:
           $ref: '#/definitions/User'
+  Reference:
+    title: Reference
+    type: object
+    properties:
+      reference_id:
+        type: integer
+      group_number:
+        type: integer
+      data1:
+        type: number
+      data2:
+        type: number
+      data3:
+        type: number
+      data4:
+        type: number
+      test_index:
+        type: integer
+      schedule_id:
+        type: integer
+      meta_id:
+        type: integer
   Meta:
     title: Meta
     type: object
@@ -475,13 +642,13 @@ definitions:
       training_name:
         type: string
       index1:
-        type: number
+        type: string
       index2:
-        type: number
+        type: string
       index3:
-        type: number
+        type: string
       index4:
-        type: number
+        type: string
       team_id:
         type: integer
   Team:

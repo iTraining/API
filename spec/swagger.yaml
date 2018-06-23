@@ -363,7 +363,7 @@ paths:
           type: array
           items:
             type: string
-          description: 各项目指标要求，e.g `[{group_number, data1, data2, data3, data4, test_index, meta_id}, ..]`
+          description: 各项目参考指标，e.g `[{group_number, data1, data2, data3, data4, test_index, meta_id}, ..]`
         # - in: formData
         #   name: members
         #   type: array
@@ -378,7 +378,7 @@ paths:
     get:
       tags:
         - Schedule
-      summary: Get team schedule list you created. 
+      summary: Get team schedule list.
       parameters:
         - in: header
           name: Cookie
@@ -390,16 +390,21 @@ paths:
           type: string
           required: true
           description: 获取计划形式，created|private
-        - in: query
-          name: date
-          type: string
-          required: true
-          description: 对应训练执行日期，获取所有计划则设为‘’
-        - in: query
+        - in: formData
           name: schedule_id
           type: integer
           required: true
-          description: 对应的计划id，如何获取所有计划则设为-1
+          description: schedule_id表示目标队伍，schedule=-1表示所有队伍
+        - in: formData
+          name: b_date
+          type: string
+          required: true
+          description: b_date和e_date表示获取[b_date, e_date]这段时间内的个人打卡信息，e.g YY-MM-DD
+        - in: formData
+          name: e_date
+          type: string
+          required: true
+          description: 见b_date
       responses:
         200:
           description: Get team schedule successfully

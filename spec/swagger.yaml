@@ -460,6 +460,11 @@ paths:
           required: true
           description: 选择获取个人还是队伍打卡信息：private | team；
         - in: query
+          name: team_id
+          type: integer
+          required: true
+          description: team_id表示目标队伍，team_id=-1表示所有队伍
+        - in: query
           name: schedule_id
           type: integer
           required: true
@@ -521,6 +526,11 @@ paths:
           type: string
           required: true
           description: 选择获取个人还是队伍打卡信息：private | team；
+        - in: query
+          name: team_id
+          type: integer
+          required: true
+          description: team_id表示目标队伍，team_id=-1表示所有队伍
         - in: query
           name: schedule_id
           type: integer

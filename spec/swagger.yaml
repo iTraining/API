@@ -289,6 +289,16 @@ paths:
           type: string
           required: true
           description: 训练指标4单位，e.g 无
+        - in: formData
+          name: index5
+          type: string
+          required: true
+          description: 训练指标3单位，e.g 无
+        - in: formData
+          name: index6
+          type: string
+          required: true
+          description: 训练指标4单位，e.g 无
       responses:
         201:
           description: Create training meta successfully
@@ -363,7 +373,7 @@ paths:
           type: array
           items:
             type: string
-          description: 各项目参考指标，e.g `[{group_number, data1, data2, data3, data4, test_index, meta_id}, ..]`
+          description: 各项目参考指标，e.g `[{group_number, data1, data2, data3, data4, data5, data6, test_index, meta_id}, ..]`
         # - in: formData
         #   name: members
         #   type: array
@@ -428,7 +438,7 @@ paths:
           required: true
           description: 目标计划
         - in: formData
-          name: Completion
+          name: completion
           type: string
           description: 完成度
       responses:
@@ -632,6 +642,10 @@ definitions:
         type: number
       data4:
         type: number
+      data5:
+        type: number
+      data6:
+        type: number
       test_index:
         type: integer
       schedule_id:
@@ -653,6 +667,10 @@ definitions:
       index3:
         type: string
       index4:
+        type: string
+      index5:
+        type: string
+      index6:
         type: string
       team_id:
         type: integer

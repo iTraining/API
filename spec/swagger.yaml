@@ -441,6 +441,10 @@ paths:
           name: completion
           type: string
           description: 完成度
+        - in: formData
+          name: description
+          type: string
+          description: 动态信息
       responses:
         201:
           description: Punch in schedule successfully

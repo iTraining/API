@@ -568,21 +568,6 @@ paths:
           required: false
           description: 用于获取session信息的sessionid
         - in: query
-          name: option
-          type: string
-          required: true
-          description: 选择获取个人还是队伍打卡信息：private | team；
-        - in: query
-          name: team_id
-          type: integer
-          required: true
-          description: team_id表示目标队伍，team_id=-1表示所有队伍
-        - in: query
-          name: schedule_id
-          type: integer
-          required: true
-          description: schedule_id表示目标计划，schedule_id=-1表示所有计划
-        - in: query
           name: b_date
           type: string
           required: true
@@ -628,11 +613,11 @@ definitions:
         type: integer
       description:
         type: string
+      image_url:
+        type: string
       nickname:
         type: string
       avatar:
-        type: string
-      image_url:
         type: string
       schedule_id:
         type: integer

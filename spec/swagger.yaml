@@ -23,6 +23,8 @@ tags:
     description: 打卡服务api
   - name: Record
     description: 上传成绩api
+  - name: Moment
+    description: 队友动态api
 schemes:
 - http
 consumes:
@@ -441,10 +443,6 @@ paths:
           name: completion
           type: string
           description: 完成度
-        - in: formData
-          name: description
-          type: string
-          description: 动态信息
       responses:
         201:
           description: Punch in schedule successfully
@@ -557,6 +555,50 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Record'
+  /moment:
+    x-summary: Moment operation
+    get:
+      tags:
+        - Moment
+      summary: Get moment in information
+      parameters:
+        - in: header
+          name: Cookie
+          type: string
+          required: false
+          description: 用于获取session信息的sessionid
+        - in: query
+          name: option
+          type: string
+          required: true
+          description: 选择获取个人还是队伍打卡信息：private | team；
+        - in: query
+          name: team_id
+          type: integer
+          required: true
+          description: team_id表示目标队伍，team_id=-1表示所有队伍
+        - in: query
+          name: schedule_id
+          type: integer
+          required: true
+          description: schedule_id表示目标计划，schedule_id=-1表示所有计划
+        - in: query
+          name: b_date
+          type: string
+          required: true
+          description: 日期，b_date和e_date表示获取[b_date, e_date)这段时间内信息，e.g YY-MM-DD
+        - in: query
+          name: e_date
+          type: string
+          required: true
+          description: 日期，见b_date
+      responses:
+        200:
+          description: Get moment information successfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Moment'
 definitions:
   Record:
     title: Record
@@ -574,11 +616,39 @@ definitions:
         type: number
       date:
         type: string
+  Moment:
+    title: Moment
+    type: object
+    properties:
+      punch_id:
+        type: string
+      punch_date:
+        type: string
+      completion:
+        type: integer
+      description:
+        type: string
+      nickname:
+        type: string
+      avatar:
+        type: string
+      image_url:
+        type: string
+      schedule_id:
+        type: integer
+      title:
+        type: string
+      references:
+        type: array
+        items:
+          $ref: '#/definitions/Reference'
   Punch:
     title: Punch
     type: object
     properties:
-      checked_date:
+      punch_id:
+        type: string
+      punch_date:
         type: string
       schedule_id:
         type: integer

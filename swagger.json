@@ -1,0 +1,1128 @@
+{
+  "swagger": "2.0",
+  "host": "itraining.zhanzy.xyz",
+  "basePath": "/api/v1",
+  "info": {
+    "description": "这是我们的API设计文档\n",
+    "version": "1.0.0",
+    "title": "iTraining",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "externalDocs": {
+    "description": "iTraining训练打卡小程序",
+    "url": "https://github.com/iTraining/document"
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "身份认证api"
+    },
+    {
+      "name": "Team",
+      "description": "队伍信息管理api"
+    },
+    {
+      "name": "Schedule",
+      "description": "计划管理api"
+    },
+    {
+      "name": "Punch",
+      "description": "打卡服务api"
+    },
+    {
+      "name": "Record",
+      "description": "上传成绩api"
+    },
+    {
+      "name": "Moment",
+      "description": "队友动态api"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/session": {
+      "x-summary": "Session Id",
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Create session_id",
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "code",
+            "type": "string",
+            "required": true,
+            "description": "小程序通过wx.login()获取的用户授权码"
+          },
+          {
+            "in": "formData",
+            "name": "nickname",
+            "type": "string",
+            "required": true,
+            "description": "微信用户昵称"
+          },
+          {
+            "in": "formData",
+            "name": "image_url",
+            "type": "string",
+            "required": true,
+            "description": "微信用户头像地址"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Get session_id successfully",
+            "schema": {
+              "$ref": "#/definitions/SessionId"
+            },
+            "examples": {
+              "application/json": {
+                "session_id": "FDBDA3fb1D"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/team": {
+      "x-summary": "Team operation",
+      "post": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Create new team",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": true,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "formData",
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "队名"
+          },
+          {
+            "in": "formData",
+            "name": "bio",
+            "type": "string",
+            "required": true,
+            "description": "队伍介绍"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create team successfully",
+            "schema": {
+              "$ref": "#/definitions/Team"
+            },
+            "examples": {
+              "application/json": {
+                "name": "中大龙舟",
+                "bio": "更黑更快更强",
+                "date": "2018-05-21 20:19:15",
+                "leader_name": "赵云雷"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Get collection of user's team information",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": true,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "query",
+            "name": "option",
+            "type": "string",
+            "required": true,
+            "description": "可选项 'all/created/joined'；'all' 获取全部队伍。'created' 获取创建队伍。'joined' 获取参加的队伍"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Get collection of team info successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Team"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Delete team of the team id (for team leader)",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": true,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "formData",
+            "name": "team_id",
+            "type": "string",
+            "required": true,
+            "description": "删除的队伍id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete team successfully"
+          }
+        }
+      }
+    },
+    "/team/detail": {
+      "x-summary": "Update team",
+      "post": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Update team detail (for team leader)",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": true,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "formData",
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "队伍名"
+          },
+          {
+            "in": "formData",
+            "name": "bio",
+            "type": "string",
+            "required": true,
+            "description": "队伍介绍"
+          },
+          {
+            "in": "formData",
+            "name": "team_id",
+            "type": "string",
+            "required": true,
+            "description": "更新的队伍id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update team successfully"
+          }
+        }
+      }
+    },
+    "/team/invitation": {
+      "x-summary": "Invitation link",
+      "get": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Get invitation link with 30 mins ttl (for team leader)",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "team_id",
+            "type": "string",
+            "required": true,
+            "description": "获取对应队伍的invitation link"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get invitation link successfully",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/team/join": {
+      "x-summary": "Join team activation",
+      "get": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Get join team activation with token",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "team_id",
+            "type": "string",
+            "required": true,
+            "description": "加入的目标队伍"
+          },
+          {
+            "in": "query",
+            "name": "token",
+            "type": "string",
+            "required": true,
+            "description": "加入队伍认证的token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Join team successfully"
+          }
+        }
+      }
+    },
+    "/team/member": {
+      "x-summary": "Team members operation",
+      "get": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Get team members (for all members in team)",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": true,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "query",
+            "name": "team_id",
+            "type": "string",
+            "required": true,
+            "description": "目标队伍"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get team member successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Delete team member (for team leader)",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": true,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "formData",
+            "name": "wx_id",
+            "type": "string",
+            "required": true,
+            "description": "目标对象微信"
+          },
+          {
+            "in": "formData",
+            "name": "team_id",
+            "type": "string",
+            "required": true,
+            "description": "希望移出的目标队伍id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete team member successfully"
+          }
+        }
+      }
+    },
+    "/schedule/meta": {
+      "x-summary": "Training meta operation",
+      "post": {
+        "tags": [
+          "Schedule"
+        ],
+        "summary": "Create meta for training record (for team leader)",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": true,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "formData",
+            "name": "team_id",
+            "type": "string",
+            "required": true,
+            "description": "目标队伍id"
+          },
+          {
+            "in": "formData",
+            "name": "training_name",
+            "type": "string",
+            "required": true,
+            "description": "训练头信息名，e.g 卧推"
+          },
+          {
+            "in": "formData",
+            "name": "index1",
+            "type": "string",
+            "required": true,
+            "description": "训练指标1单位，e.g 次/组"
+          },
+          {
+            "in": "formData",
+            "name": "index2",
+            "type": "string",
+            "required": true,
+            "description": "训练指标2单位，e.g 分钟/组"
+          },
+          {
+            "in": "formData",
+            "name": "index3",
+            "type": "string",
+            "required": true,
+            "description": "训练指标3单位，e.g 无"
+          },
+          {
+            "in": "formData",
+            "name": "index4",
+            "type": "string",
+            "required": true,
+            "description": "训练指标4单位，e.g 无"
+          },
+          {
+            "in": "formData",
+            "name": "index5",
+            "type": "string",
+            "required": true,
+            "description": "训练指标3单位，e.g 无"
+          },
+          {
+            "in": "formData",
+            "name": "index6",
+            "type": "string",
+            "required": true,
+            "description": "训练指标4单位，e.g 无"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create training meta successfully",
+            "schema": {
+              "$ref": "#/definitions/Meta"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Schedule"
+        ],
+        "summary": "Get team training meta",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": true,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "query",
+            "name": "team_id",
+            "type": "string",
+            "required": true,
+            "description": "目标队伍"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get team training meta successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Meta"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/schedule": {
+      "x-summary": "Schedule operation",
+      "post": {
+        "tags": [
+          "Schedule"
+        ],
+        "summary": "Create team schedule (for leader)",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": true,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "formData",
+            "name": "team_id",
+            "type": "integer",
+            "required": true,
+            "description": "目标队伍"
+          },
+          {
+            "in": "formData",
+            "name": "training_class",
+            "type": "string",
+            "required": true,
+            "description": "计划类型：训练|测试"
+          },
+          {
+            "in": "formData",
+            "name": "title",
+            "type": "string",
+            "required": true,
+            "description": "计划标题"
+          },
+          {
+            "in": "formData",
+            "name": "description",
+            "type": "string",
+            "required": true,
+            "description": "计划介绍"
+          },
+          {
+            "in": "formData",
+            "name": "state",
+            "type": "string",
+            "required": true,
+            "description": "计划状态, e.g 草稿|发布"
+          },
+          {
+            "in": "formData",
+            "name": "training_date",
+            "type": "string",
+            "required": true,
+            "description": "训练时间, e.g YY-MM-DD"
+          },
+          {
+            "in": "formData",
+            "name": "references",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "各项目参考指标，e.g `[{group_number, data1, data2, data3, data4, data5, data6, test_index, meta_id}, ..]`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Create team schedule successfully",
+            "schema": {
+              "$ref": "#/definitions/Schedule"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Schedule"
+        ],
+        "summary": "Get team schedule list.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": false,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "query",
+            "name": "option",
+            "type": "string",
+            "required": true,
+            "description": "获取计划形式，created|private"
+          },
+          {
+            "in": "query",
+            "name": "team_id",
+            "type": "integer",
+            "required": true,
+            "description": "team_id表示目标队伍，team_id=-1表示所有队伍"
+          },
+          {
+            "in": "query",
+            "name": "b_date",
+            "type": "string",
+            "required": true,
+            "description": "日期，b_date和e_date表示获取[b_date, e_date)这段时间内信息，e.g YY-MM-DD"
+          },
+          {
+            "in": "query",
+            "name": "e_date",
+            "type": "string",
+            "required": true,
+            "description": "日期，见b_date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get team schedule successfully",
+            "schema": {
+              "$ref": "#/definitions/Schedule"
+            }
+          }
+        }
+      }
+    },
+    "/punch": {
+      "x-summary": "Punch in operation",
+      "post": {
+        "tags": [
+          "Punch"
+        ],
+        "summary": "Punch in training schedule",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": false,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "formData",
+            "name": "schedule_id",
+            "type": "string",
+            "required": true,
+            "description": "目标计划"
+          },
+          {
+            "in": "formData",
+            "name": "completion",
+            "type": "string",
+            "description": "完成度"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Punch in schedule successfully"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Punch"
+        ],
+        "summary": "Get punch in information",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": false,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "query",
+            "name": "option",
+            "type": "string",
+            "required": true,
+            "description": "选择获取个人还是队伍打卡信息：private | team；"
+          },
+          {
+            "in": "query",
+            "name": "team_id",
+            "type": "integer",
+            "required": true,
+            "description": "team_id表示目标队伍，team_id=-1表示所有队伍"
+          },
+          {
+            "in": "query",
+            "name": "schedule_id",
+            "type": "integer",
+            "required": true,
+            "description": "schedule_id表示目标计划，schedule_id=-1表示所有计划"
+          },
+          {
+            "in": "query",
+            "name": "b_date",
+            "type": "string",
+            "required": true,
+            "description": "日期，b_date和e_date表示获取[b_date, e_date)这段时间内信息，e.g YY-MM-DD"
+          },
+          {
+            "in": "query",
+            "name": "e_date",
+            "type": "string",
+            "required": true,
+            "description": "日期，见b_date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get punch information successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Punch"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/record": {
+      "x-summary": "Record operation",
+      "post": {
+        "tags": [
+          "Record"
+        ],
+        "summary": "Upload new testing record",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": false,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "formData",
+            "name": "reference_id",
+            "type": "integer",
+            "required": true,
+            "description": "训练参考id"
+          },
+          {
+            "in": "formData",
+            "name": "group_id",
+            "type": "integer",
+            "required": true,
+            "description": "第几组"
+          },
+          {
+            "in": "formData",
+            "name": "data",
+            "type": "number",
+            "required": true,
+            "description": "考量数据"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Punch in schedule successfully"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Record"
+        ],
+        "summary": "Get testing record for leader or private",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "option",
+            "type": "string",
+            "required": true,
+            "description": "选择获取个人还是队伍打卡信息：private | team；"
+          },
+          {
+            "in": "query",
+            "name": "team_id",
+            "type": "integer",
+            "required": true,
+            "description": "team_id表示目标队伍，team_id=-1表示所有队伍"
+          },
+          {
+            "in": "query",
+            "name": "schedule_id",
+            "type": "integer",
+            "required": true,
+            "description": "schedule_id表示目标计划，schedule=-1表示所有计划"
+          },
+          {
+            "in": "query",
+            "name": "b_date",
+            "type": "string",
+            "required": true,
+            "description": "日期，b_date和e_date表示获取[b_date, e_date)这段时间内信息，e.g YY-MM-DD"
+          },
+          {
+            "in": "query",
+            "name": "e_date",
+            "type": "string",
+            "required": true,
+            "description": "日期，见b_date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get records information successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Record"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/moment": {
+      "x-summary": "Moment operation",
+      "get": {
+        "tags": [
+          "Moment"
+        ],
+        "summary": "Get moment in information",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Cookie",
+            "type": "string",
+            "required": false,
+            "description": "用于获取session信息的sessionid"
+          },
+          {
+            "in": "query",
+            "name": "b_date",
+            "type": "string",
+            "required": true,
+            "description": "日期，b_date和e_date表示获取[b_date, e_date)这段时间内信息，e.g YY-MM-DD"
+          },
+          {
+            "in": "query",
+            "name": "e_date",
+            "type": "string",
+            "required": true,
+            "description": "日期，见b_date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get moment information successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Moment"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Record": {
+      "title": "Record",
+      "type": "object",
+      "properties": {
+        "record_id": {
+          "type": "integer"
+        },
+        "reference_id": {
+          "type": "integer"
+        },
+        "wx_id": {
+          "type": "integer"
+        },
+        "group_id": {
+          "type": "integer"
+        },
+        "data": {
+          "type": "number"
+        },
+        "date": {
+          "type": "string"
+        }
+      }
+    },
+    "Moment": {
+      "title": "Moment",
+      "type": "object",
+      "properties": {
+        "punch_id": {
+          "type": "string"
+        },
+        "punch_date": {
+          "type": "string"
+        },
+        "completion": {
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "schedule_id": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          }
+        }
+      }
+    },
+    "Punch": {
+      "title": "Punch",
+      "type": "object",
+      "properties": {
+        "punch_id": {
+          "type": "string"
+        },
+        "punch_date": {
+          "type": "string"
+        },
+        "schedule_id": {
+          "type": "integer"
+        },
+        "completion": {
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "wx_id": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        }
+      }
+    },
+    "SessionId": {
+      "title": "Session id",
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "session_id"
+      ],
+      "example": {
+        "session_id": "FDBDA3fb1D"
+      }
+    },
+    "User": {
+      "title": "User",
+      "type": "object",
+      "properties": {
+        "nickname": {
+          "type": "string"
+        },
+        "wx_id": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        }
+      }
+    },
+    "Schedule": {
+      "title": "Schedule",
+      "type": "object",
+      "properties": {
+        "schedule_id": {
+          "type": "integer"
+        },
+        "team_id": {
+          "type": "integer"
+        },
+        "training_class": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "training_date": {
+          "type": "string"
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          }
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      }
+    },
+    "Reference": {
+      "title": "Reference",
+      "type": "object",
+      "properties": {
+        "reference_id": {
+          "type": "integer"
+        },
+        "group_number": {
+          "type": "integer"
+        },
+        "data1": {
+          "type": "number"
+        },
+        "data2": {
+          "type": "number"
+        },
+        "data3": {
+          "type": "number"
+        },
+        "data4": {
+          "type": "number"
+        },
+        "data5": {
+          "type": "number"
+        },
+        "data6": {
+          "type": "number"
+        },
+        "test_index": {
+          "type": "integer"
+        },
+        "schedule_id": {
+          "type": "integer"
+        },
+        "meta_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "Meta": {
+      "title": "Meta",
+      "type": "object",
+      "properties": {
+        "meta_id": {
+          "type": "integer"
+        },
+        "training_name": {
+          "type": "string"
+        },
+        "index1": {
+          "type": "string"
+        },
+        "index2": {
+          "type": "string"
+        },
+        "index3": {
+          "type": "string"
+        },
+        "index4": {
+          "type": "string"
+        },
+        "index5": {
+          "type": "string"
+        },
+        "index6": {
+          "type": "string"
+        },
+        "team_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "Team": {
+      "title": "Team",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "leader_name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "bio",
+        "date",
+        "leader_name"
+      ],
+      "example": {
+        "name": "中大龙舟",
+        "bio": "更黑更快更强",
+        "date": "2018-05-21 20:19:15",
+        "leader_name": "赵云雷"
+      }
+    }
+  }
+}

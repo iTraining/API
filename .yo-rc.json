@@ -1,0 +1,10 @@
+{
+  "generator-openapi-repo": {
+    "importExistingSpec": false,
+    "name": "itraining",
+    "repo": "iTraining/API",
+    "splitSpec": false,
+    "samples": true,
+    "installSwaggerUI": true
+  }
+}
